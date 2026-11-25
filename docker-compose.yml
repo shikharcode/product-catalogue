@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    env_file: .env
+    environment:
+      SMTP_HOST: mailhog
+      SMTP_PORT: "1025"
+      CORS_ORIGIN: "http://localhost:5173"
+    depends_on:
+      - mailhog
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: "http://backend:3001"
+    depends_on:
+      - backend
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI — view sent emails at http://localhost:8025
